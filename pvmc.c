@@ -1,6 +1,27 @@
 /*
-  $Id: pvmc.c,v 1.8 2000/02/09 08:48:22 brisset Exp $
-  $Log: pvmc.c,v $
+    Copyright 1999-2011 Pascal Brisset / Jean-Marc Alliot
+
+    This file is part of the ocaml pvm library.
+
+    The ocaml pvm library is free software: 
+    you can redistribute it and/or modify it under the terms of 
+    the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The ocaml pvm library is distributed in the hope that it will be 
+    useful,but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public 
+    License along with the ocaml pvm library.  
+    If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*
+  $Id: pvmc.c 2825 2006-07-12 13:22:22Z olive $
+  $Log$
   Revision 1.8  2000/02/09 08:48:22  brisset
   Histoires de PushRoot
 
@@ -18,10 +39,11 @@
 
  */
 #include <stdio.h>
+#include <string.h>
+#include <pvm3.h>
 #include <mlvalues.h>
 #include <alloc.h>
 #include <memory.h>
-#include "pvm3.h"
 
 
 void TreatError( int err )
@@ -205,12 +227,13 @@ static int encodings[] = {PvmDataDefault, PvmDataRaw, PvmDataInPlace};
 value
 Pvm_initsend(value encoding)
 {
-  int enc,res;
-
+  CAMLparam0();
+  CAMLlocal1(res);
+  int enc;
   enc = encodings[Int_val(encoding)];
   res=pvm_initsend(enc);
   if (res<0) TreatError(res);
-  return (Val_int(res));
+  CAMLreturn (res);
 }
 
 value
@@ -267,7 +290,9 @@ Pvm_freebuf(value bufid)
 value
 Pvm_recv(value tid,value msgtag)
 {
+  enter_blocking_section();
   int res = pvm_recv(Int_val(tid), Int_val(msgtag));
+  leave_blocking_section();
   if (res<0) TreatError(res);
   return(Val_int(res));
 }
@@ -306,8 +331,9 @@ Pvm_probe(value tid,value msgtag)
 value
 Pvm_bufinfo(value bufid)
 {
+  CAMLparam1(bufid);
   int cbufid,res,bytes,msgtag,tid;
-  value v;
+  CAMLlocal1(v);
 
   res = pvm_bufinfo(Int_val(bufid), &bytes, &msgtag, &tid);
   if (res<0) TreatError(res);
@@ -315,7 +341,7 @@ Pvm_bufinfo(value bufid)
   Field(v,0)=Val_int(bytes);
   Field(v,1)=Val_int(msgtag);
   Field(v,2)=Val_int(tid);
-  return v;
+  CAMLreturn(v);
 }
 
 value
@@ -394,9 +420,10 @@ Pvm_pkstring(value s)
 value
 Pvm_upkstring(void)
 {
+  CAMLparam0();
   int bufid,bytes,msgtag,tid;
   char *tab;
-  value s;
+  CAMLlocal1(s);
   int res,i;
 
   res=pvm_upkint(&bytes,1,1);
@@ -413,7 +440,7 @@ Pvm_upkstring(void)
   s = alloc_string(bytes);
   for (i=0;i<bytes;i++) Byte(s,i)=tab[i];
   free(tab);
-  return s;
+  CAMLreturn(s);
 }
 
 value
@@ -554,7 +581,7 @@ value
 Pvm_setrbuf(value bufid)
 {
   int res = pvm_setrbuf(Int_val(bufid));
-  if (res < 0) TreatError(res);
+  if (res < 0) TreatError(res); 
   return;
 }
 
@@ -757,4 +784,14 @@ Pvm_upkbyte(value n)
   for (i = 0; i < cn; i++) Store_field(v, i, t[i]);
   free(t);
   CAMLreturn(v);
+}
+
+
+value 
+Pvm_kill (value tid)
+{
+  CAMLparam1(tid);
+  int res = 0;
+  res = pvm_kill (tid);
+  CAMLreturn(res);
 }

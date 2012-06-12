@@ -1,4 +1,24 @@
-(* $Id: pvm.mli,v 1.7 2003/09/19 14:04:03 brisset Exp $ *)
+(*
+    Copyright 1999-2011 Pascal Brisset / Jean-Marc Alliot
+
+    This file is part of the ocaml pvm library.
+
+    The ocaml pvm library is free software: 
+    you can redistribute it and/or modify it under the terms of 
+    the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The ocaml pvm library is distributed in the hope that it will be 
+    useful,but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public 
+    License along with the ocaml pvm library.  
+    If not, see <http://www.gnu.org/licenses/>.
+*)
+(* $Id: pvm.mli 2825 2006-07-12 13:22:22Z olive $ *)
 
 type tid
 type bufid
@@ -57,6 +77,7 @@ type where = All | TaskTid of tid | HostTid of tid
 val msgtag_of_int : int -> msgtag
 val int_of_msgtag :  msgtag -> int
 val int_of_tid :  tid -> int
+val int_of_bufid :  bufid -> int
 val stride_of_int : int -> stride
 val invalidBuf : bufid
 val mytid : unit -> tid
@@ -118,4 +139,4 @@ val upkint : int -> int array
 val upkdouble : int -> float array
 val upkstr : int -> string
 val upkbyte : int -> char array
-
+val upkstring: unit -> string

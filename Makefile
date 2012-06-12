@@ -1,7 +1,7 @@
-# $Id: Makefile,v 1.8 2003/04/16 07:07:55 brisset Exp $
+# $Id: Makefile 2823 2003-04-16 07:07:55Z brisset $
 
-OCAMLC = ocamlc.opt
-OCAMLOPT = ocamlopt.opt
+OCAMLC = ocamlc
+OCAMLOPT = ocamlopt
 OCAMLDEP=ocamldep
 OCAMLFLAGS= -g
 OCAMLOPTFLAGS=

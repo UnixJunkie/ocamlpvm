@@ -1,4 +1,24 @@
-(* $Id: pvm.ml,v 1.9 2003/09/19 14:04:03 brisset Exp $ *)
+(*
+    Copyright 1999-2011 Pascal Brisset / Jean-Marc Alliot
+
+    This file is part of the ocaml pvm library.
+
+    The ocaml pvm library is free software: 
+    you can redistribute it and/or modify it under the terms of 
+    the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The ocaml pvm library is distributed in the hope that it will be 
+    useful,but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public 
+    License along with the ocaml pvm library.  
+    If not, see <http://www.gnu.org/licenses/>.
+*)
+(* $Id: pvm.ml 2825 2006-07-12 13:22:22Z olive $ *)
 
 type tid = int
 type encoding = DataDefault | DataRaw | DataInPlace
@@ -60,6 +80,8 @@ let int_of_msgtag x = x
 let msgtag_of_int x = x
 let stride_of_int x = x
 let int_of_tid x = x
+let int_of_bufid x = x
+
 let invalidBuf  = 0
 
 
@@ -131,7 +153,6 @@ let simple_spawn task host =
   match (if host <> "" then spawn task [||] [TaskHost] host 1 else spawn task [||] [TaskDefault] "" 1).(0) with
     Tid t -> t
   | Fault e -> raise e
-
 
 external initsend : encoding -> bufid = "Pvm_initsend"
 let anyMsgTag : msgtag= -1
