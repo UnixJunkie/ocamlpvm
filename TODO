@@ -1,0 +1,4 @@
+
+ - remove all compilation warnings for the C file, add -Wall to the
+   compilation options
+ - try to create an _oasis file
